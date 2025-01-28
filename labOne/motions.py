@@ -52,16 +52,13 @@ class motion_executioner(Node):
 
         # TODO Part 5: Create below the subscription to the topics corresponding to the respective sensors
         # IMU subscription
-        
-        ...
+        self.create_subscription(Imu, "/imu", self.sub_callback, qos_profile=qos)
         
         # ENCODER subscription
-
-        ...
+        self.create_subscription(Odometry, "/odom", self.sub_callback, qos_profile=qos)
         
         # LaserScan subscription 
-        
-        ...
+        self.create_subscription(LaserScan, "/scan", self.sub_callback, qos_profile=qos)
         
         self.create_timer(0.1, self.timer_callback)
 
@@ -73,15 +70,19 @@ class motion_executioner(Node):
     # You can save the needed fields into a list, and pass the list to the log_values function in utilities.py
 
     def imu_callback(self, imu_msg: Imu):
-        ...    # log imu msgs
+        # log imu msgs
+        time_nanos = Time.from_msg(imu_msg.header.stamp).nanoseconds
+        self.imu_logger.log_values([time_nanos, imu_msg.orientation_covariance, imu_msg.angular_velocity_covariance, imu_msg.linear_acceleration_covariance])
         
     def odom_callback(self, odom_msg: Odometry):
-        
-        ... # log odom msgs
+        # log odom msgs
+        time_nanos = Time.from_msg(odom_msg.header.stamp).nanoseconds
+        self.odom_logger.log_values([time_nanos, odom_msg.child_frame_id, odom_msg.pose, odom_msg.twist])
                 
     def laser_callback(self, laser_msg: LaserScan):
-        
-        ... # log laser msgs with position msg at that time
+        # log laser msgs with position msg at that time
+        time_nanos = Time.from_msg(laser_msg.header.stamp).nanoseconds
+        self.odom_logger.log_values([time_nanos, laser_msg.range_min, laser_msg.range_max, laser_msg.ranges, laser_msg.intensities])
                 
     def timer_callback(self):
         
