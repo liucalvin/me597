@@ -61,6 +61,7 @@ class motion_executioner(Node):
         self.create_subscription(LaserScan, "/scan", self.sub_callback, qos_profile=qos)
         
         self.create_timer(0.1, self.timer_callback)
+        self.time_elapsed = 0.0
 
 
     # TODO Part 5: Callback functions: complete the callback functions of the three sensors to log the proper data.
@@ -116,16 +117,38 @@ class motion_executioner(Node):
         
         msg=Twist()
         ... # fill up the twist msg for circular motion
+        msg.linear.x = 1.0
+        msg.linear.y = 0.0
+        msg.linear.z = 0.0
+        msg.angular.x = 0.0
+        msg.angular.y = 0.0
+        msg.angular.z = 1.0
+
         return msg
 
     def make_spiral_twist(self):
         msg=Twist()
         ... # fill up the twist msg for spiral motion
+        self.time_elapsed += 0.1
+        msg.linear.x = 1.0*self.time_elapsed
+        msg.linear.y = 0.0
+        msg.linear.z = 0.0
+        msg.angular.x = 0.0
+        msg.angular.y = 0.0
+        msg.angular.z = 1.0
+
         return msg
     
     def make_acc_line_twist(self):
         msg=Twist()
         ... # fill up the twist msg for line motion
+        msg.linear.x = 1.0
+        msg.linear.y = 0.0
+        msg.linear.z = 0.0
+        msg.angular.x = 0.0
+        msg.angular.y = 0.0
+        msg.angular.z = 0.0
+
         return msg
 
 import argparse
