@@ -52,13 +52,13 @@ class motion_executioner(Node):
 
         # TODO Part 5: Create below the subscription to the topics corresponding to the respective sensors
         # IMU subscription
-        self.create_subscription(Imu, "/imu", self.sub_callback, qos_profile=qos)
+        self.create_subscription(Imu, "/imu", self.imu_callback, qos_profile=qos)
         
         # ENCODER subscription
-        self.create_subscription(Odometry, "/odom", self.sub_callback, qos_profile=qos)
+        self.create_subscription(Odometry, "/odom", self.odom_callback, qos_profile=qos)
         
         # LaserScan subscription 
-        self.create_subscription(LaserScan, "/scan", self.sub_callback, qos_profile=qos)
+        self.create_subscription(LaserScan, "/scan", self.laser_callback, qos_profile=qos)
         
         self.create_timer(0.1, self.timer_callback)
         self.time_elapsed = 0.0
@@ -72,18 +72,32 @@ class motion_executioner(Node):
 
     def imu_callback(self, imu_msg: Imu):
         # log imu msgs
+        self.imu_initialized = True
         time_nanos = Time.from_msg(imu_msg.header.stamp).nanoseconds
-        self.imu_logger.log_values([time_nanos, imu_msg.orientation_covariance, imu_msg.angular_velocity_covariance, imu_msg.linear_acceleration_covariance])
+        self.imu_logger.log_values([imu_msg.linear_acceleration.x, imu_msg.linear_acceleration.y, imu_msg.angular_velocity.z, time_nanos])
+        
         
     def odom_callback(self, odom_msg: Odometry):
         # log odom msgs
+        self.odom_initialized = True
         time_nanos = Time.from_msg(odom_msg.header.stamp).nanoseconds
-        self.odom_logger.log_values([time_nanos, odom_msg.child_frame_id, odom_msg.pose, odom_msg.twist])
+        x = odom_msg.pose.pose.orientation.x
+        y = odom_msg.pose.pose.orientation.y
+        z = odom_msg.pose.pose.orientation.z
+        w = odom_msg.pose.pose.orientation.w
+        quater = [x,y,z,w]
+        self.odom_logger.log_values([odom_msg.pose.pose.position.x,odom_msg.pose.pose.position.y,euler_from_quaternion(quater), time_nanos])
                 
     def laser_callback(self, laser_msg: LaserScan):
         # log laser msgs with position msg at that time
+        self.laser_initialized = True
         time_nanos = Time.from_msg(laser_msg.header.stamp).nanoseconds
-        self.odom_logger.log_values([time_nanos, laser_msg.range_min, laser_msg.range_max, laser_msg.ranges, laser_msg.intensities])
+        list = laser_msg.ranges.tolist()
+        list.append(laser_msg.angle_increment)
+        list.append(time_nanos)
+        self.laser_logger.log_values(list)
+        print(laser_msg)
+        
                 
     def timer_callback(self):
         
@@ -116,32 +130,32 @@ class motion_executioner(Node):
     def make_circular_twist(self):
         
         msg=Twist()
-        ... # fill up the twist msg for circular motion
-        msg.linear.x = 1.0
+        # fill up the twist msg for circular motion
+        msg.linear.x = 5.0
         msg.linear.y = 0.0
         msg.linear.z = 0.0
         msg.angular.x = 0.0
         msg.angular.y = 0.0
-        msg.angular.z = 1.0
+        msg.angular.z = 20.0
 
         return msg
 
     def make_spiral_twist(self):
         msg=Twist()
-        ... # fill up the twist msg for spiral motion
+        # fill up the twist msg for spiral motion
         self.time_elapsed += 0.1
-        msg.linear.x = 1.0*self.time_elapsed
+        msg.linear.x = 4.0*self.time_elapsed
         msg.linear.y = 0.0
         msg.linear.z = 0.0
         msg.angular.x = 0.0
         msg.angular.y = 0.0
-        msg.angular.z = 1.0
+        msg.angular.z = 30.0
 
         return msg
     
     def make_acc_line_twist(self):
         msg=Twist()
-        ... # fill up the twist msg for line motion
+        # fill up the twist msg for line motion
         msg.linear.x = 1.0
         msg.linear.y = 0.0
         msg.linear.z = 0.0

@@ -29,6 +29,7 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(description='Process some files.')
     parser.add_argument('--files', nargs='+', required=True, help='List of files to process')
     
+    
     args = parser.parse_args()
     
     print("plotting the files", args.files)
