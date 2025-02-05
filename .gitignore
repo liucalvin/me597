@@ -1,5 +1,4 @@
-/__pycache__
-
-/og_files
-
-/me597env
+/**/__pycache__/
+/**/og_files/
+/**/me597env/
+/**/.DS_Store
