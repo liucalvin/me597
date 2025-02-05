@@ -5,7 +5,7 @@
 import matplotlib.pyplot as plt
 from utilities import FileReader
 
-def plot_errors(filename):
+def plot_errors(filename, graph_title, x_axis_title, y_axis_title):
     
     headers, values=FileReader(filename).read_file() 
     time_list=[]
@@ -17,7 +17,9 @@ def plot_errors(filename):
     for i in range(0, len(headers) - 1):
         plt.plot(time_list, [lin[i] for lin in values], label= headers[i]+ " linear")
     
-    #plt.plot([lin[0] for lin in values], [lin[1] for lin in values])
+    plt.title(graph_title)
+    plt.xlabel(x_axis_title)
+    plt.ylabel(y_axis_title)
     plt.legend()
     plt.grid()
     plt.show()
@@ -28,7 +30,9 @@ if __name__=="__main__":
 
     parser = argparse.ArgumentParser(description='Process some files.')
     parser.add_argument('--files', nargs='+', required=True, help='List of files to process')
-    
+    parser.add_argument('--title', required=True, help='Title of the graph')
+    parser.add_argument('--xaxis', required=True, help='Title of the x-axis')
+    parser.add_argument('--yaxis', required=True, help='Title of the y-axis')
     
     args = parser.parse_args()
     
@@ -36,4 +40,4 @@ if __name__=="__main__":
 
     filenames=args.files
     for filename in filenames:
-        plot_errors(filename)
+        plot_errors(filename, args.title, args.xaxis, args.yaxis)
