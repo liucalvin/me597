@@ -1,4 +1,6 @@
 # Type of planner
+import numpy as np
+
 POINT_PLANNER=0; TRAJECTORY_PLANNER=1
 
 
@@ -24,8 +26,17 @@ class planner:
         return x, y
 
     # TODO Part 6: Implement the trajectories here
-    def trajectory_planner(self):
-        pass
+    def trajectory_planner(self, trajectory_type="parabola"):
         # the return should be a list of trajectory points: [ [x1,y1], ..., [xn,yn]]
-        # return 
+        trajectory = []
+
+        if trajectory_type == "parabola":
+            x_values = np.linspace(0.0, 1.5, num=20)
+            trajectory = [[x, x**2] for x in x_values]
+
+        elif trajectory_type == "sigmoid":
+            x_values = np.linspace(0.0, 2.5, num=20)
+            trajectory = [[x, 2 / (1 + np.exp(-2 * x)) - 1] for x in x_values]
+
+        return trajectory
 
