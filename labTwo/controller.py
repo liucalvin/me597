@@ -8,6 +8,9 @@ M_PI=3.1415926535
 
 P=0; PD=1; PI=2; PID=3
 
+MAX_LINEAR_VELOCITY=0.31
+MAX_ANGULAR_VELOCITY=1.90
+
 class controller:
     
     
@@ -30,8 +33,8 @@ class controller:
         
         # TODO Part 4: Add saturation limits for the robot linear and angular velocity
 
-        linear_vel = ... if linear_vel > 1.0 else linear_vel
-        angular_vel= ... if angular_vel > 1.0 else angular_vel
+        linear_vel = MAX_LINEAR_VELOCITY if linear_vel > MAX_LINEAR_VELOCITY else linear_vel
+        angular_vel= MAX_ANGULAR_VELOCITY if angular_vel > MAX_ANGULAR_VELOCITY else angular_vel
         
         return linear_vel, angular_vel
     
@@ -57,8 +60,8 @@ class trajectoryController(controller):
 
         # TODO Part 5: Add saturation limits for the robot linear and angular velocity
 
-        linear_vel = ... if linear_vel > ... else linear_vel
-        angular_vel= ... if angular_vel > ... else angular_vel
+        linear_vel = MAX_LINEAR_VELOCITY if linear_vel > MAX_LINEAR_VELOCITY else linear_vel
+        angular_vel= MAX_ANGULAR_VELOCITY if angular_vel > MAX_ANGULAR_VELOCITY else angular_vel
         
         return linear_vel, angular_vel
 
