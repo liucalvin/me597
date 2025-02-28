@@ -1,3 +1,4 @@
+import math
 from rclpy.time import Time
 from utilities import Logger, euler_from_quaternion, calculate_linear_error, calculate_angular_error
 
@@ -88,7 +89,7 @@ class PID_ctrl:
         error_int=sum_*dt_avg
         
         # TODO Part 4: Log your errors
-        self.logger.log_values(latest_error, error_dot, error_int)
+        self.logger.log_values([latest_error, error_dot, error_int, stamp.sec + stamp.nanosec / math.pow(10, 9)])
         
         # TODO Part 4: Implement the control law of P-controller
         if self.type == P:
@@ -97,7 +98,7 @@ class PID_ctrl:
         
         # TODO Part 5: Implement the control law corresponding to each type of controller
         elif self.type == PD:
-            vel = self.kp * latest_error + self.kd * error_dot
+            vel = self.kp * latest_error + self.kv * error_dot
             return vel # complete
         
         elif self.type == PI:
@@ -105,5 +106,5 @@ class PID_ctrl:
             return vel # complete
         
         elif self.type == PID:
-            vel = self.kp * latest_error + self.ki * error_int + self.kd * error_dot
+            vel = self.kp * latest_error + self.ki * error_int + self.kv * error_dot
             return vel # complete
