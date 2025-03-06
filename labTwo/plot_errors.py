@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from utilities import FileReader
-
+import os
 
 
 
@@ -32,7 +32,14 @@ def plot_errors(filename):
     axes[1].legend()
     axes[1].grid()
 
-    plt.show()
+    csv_file = args.files[0] if isinstance(args.files, list) else args.files
+
+    # save plots as png file
+    csv_dir = os.path.dirname(csv_file)
+    csv_basename = os.path.splitext(os.path.basename(csv_file))[0]
+    output_path = os.path.join(csv_dir, f"{csv_basename}.png")
+
+    plt.savefig(output_path)
     
     
 
