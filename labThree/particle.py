@@ -18,9 +18,11 @@ class particle:
         w: angular velocity
         dt: time step
         """
-        self.pose[0] += ...
-        self.pose[1] += ...
-        self.pose[2] += ...
+        delta_theta = w * dt
+        self.pose[0] += (v / w) * (np.sin(self.pose[2] + delta_theta) - np.sin(self.pose[2]))
+        self.pose[1] += (v / w) * (np.cos(self.pose[2]) - np.cos(self.pose[2] + delta_theta))
+        self.pose[2] += delta_theta
+
 
     # TODO: You need to explain the following function to TA
     def calculateParticleWeight(self, scanOutput: LaserScan, mapManipulatorInstance: mapManipulator, laser_to_ego_transformation: np.array):
