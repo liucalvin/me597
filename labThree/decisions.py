@@ -48,6 +48,7 @@ class decision_maker(Node):
         # TODO part 5: call the proper types
         self.localizer=localization(particlesFilter)
         #self.localizer=localization(rawSensors)
+        #switch between these two
 
         
         if motion_type==POINT_PLANNER:
