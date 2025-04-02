@@ -203,9 +203,9 @@ def search(maze, start, end):
                 continue
 
             # TODO PART 4 Create the f, g, and h values
-            child.g = ...
+            child.g = sqrt(pow((current_node.position[0] - child.position[0]),2) + pow((current_node.position[1] - child.position[1]),2))
             # Heuristic costs calculated here, this is using eucledian distance
-            child.h = ...
+            child.h = get_heurstic(child.position, end, manhattan)
 
             child.f = child.g + child.h
 
