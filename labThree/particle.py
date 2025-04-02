@@ -19,10 +19,22 @@ class particle:
         dt: time step
         """
         delta_theta = w * dt
+        """
+        noisev = np.random.normal(scale=0.01)
+        noisew = np.random.normal(scale=0.01)
+        noiset = np.random.normal(scale=0.01)
+
+        vp = v + noisev
+        wp = w + noisew
+        
         self.pose[0] += (v / w) * (np.sin(self.pose[2] + delta_theta) - np.sin(self.pose[2]))
         self.pose[1] += (v / w) * (np.cos(self.pose[2]) - np.cos(self.pose[2] + delta_theta))
         self.pose[2] += delta_theta
-
+        """
+        
+        self.pose[0] += v*dt*np.cos(self.pose[2]+(delta_theta/2))
+        self.pose[1] += v*dt*np.sin(self.pose[2]+(delta_theta/2))
+        self.pose[2] += delta_theta
 
     # TODO: You need to explain the following function to TA
     def calculateParticleWeight(self, scanOutput: LaserScan, mapManipulatorInstance: mapManipulator, laser_to_ego_transformation: np.array):

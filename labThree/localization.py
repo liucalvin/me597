@@ -55,19 +55,35 @@ class localization(Node):
         time_syncher=message_filters.ApproximateTimeSynchronizer([self.odom_pose_sub, self.pf_pose_sub], queue_size=10, slop=0.1)
         time_syncher.registerCallback(self.odom_and_pf_pose_callback)
 
+    def listToQuat(self, list):
+        qt = Quaternion()
+        qt.x = list[0]
+        qt.y = list[1]
+        qt.z = list[2]
+        qt.w = list[3]
+        return qt
+
     def odom_and_pf_pose_callback(self, odom_msg: odom, pf_msg: odom):
         # TODO: You need to use the pf_msg to update the pose of the robot [x, y, theta, stamp]
+        
+        # qt = Quaternion()
+        # qt.x = pf_msg.pose.pose.orientation.x
+        # qt.y = pf_msg.pose.pose.orientation.y
+        # qt.z = pf_msg.pose.pose.orientation.z
+        # qt.w = pf_msg.pose.pose.orientation.w
+    
         pf_quater = [
             pf_msg.pose.pose.orientation.x,
             pf_msg.pose.pose.orientation.y,
             pf_msg.pose.pose.orientation.z,
             pf_msg.pose.pose.orientation.w
         ]
+        
 
         self.pose = [
             pf_msg.pose.pose.position.x,
             pf_msg.pose.pose.position.y,
-            euler_from_quaternion(pf_quater),
+            euler_from_quaternion(self.listToQuat(pf_quater)),
             pf_msg.header.stamp
         ]
         
@@ -84,7 +100,7 @@ class localization(Node):
         odom_values_list = [
             odom_msg.pose.pose.orientation.x,
             odom_msg.pose.pose.orientation.y,
-            euler_from_quaternion(odom_quater),
+            euler_from_quaternion(self.listToQuat(odom_quater)),
             odom_msg.twist.twist.linear.x,
             odom_msg.twist.twist.angular.z,
         ]
@@ -113,6 +129,7 @@ class localization(Node):
         
     def getPose(self):
         return self.pose
+    
 
 
 if __name__=="__main__":
